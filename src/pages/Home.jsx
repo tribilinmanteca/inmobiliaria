@@ -1,10 +1,13 @@
 import React from "react";
-
+import { useNavigate } from "react-router-dom";
 function Home() {
+
+const navigate = useNavigate();
   return (
     <div>
-      <h1>Bienvenido al sistema</h1>
-      <p>Ya iniciaste sesión correctamente</p>
+         <button onClick={() => navigate("/tipopersona")}>
+            Ir a TipoPersona
+        </button>
     </div>
   );
 }
