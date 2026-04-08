@@ -26,4 +26,19 @@ router.post("/login", (req, res) => {
   });
 });
 
+router.post("/register", (req, res) => {
+  const { usuario, contrasena } = req.body;
+
+  const query = "INSERT INTO login (usuario, contrasena) VALUES (?, ?)";
+
+  db.query(query, [usuario, contrasena], (err, result) => {
+    if (err) {
+      console.error("ERROR SQL:", err);
+      return res.status(500).json({ error: err });
+    }
+
+    res.json({ success: true, message: "Usuario registrado" });
+  });
+});
+
 module.exports = router;

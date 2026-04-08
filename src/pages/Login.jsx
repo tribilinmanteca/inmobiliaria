@@ -1,9 +1,12 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; // 👈 IMPORTANTE
 
 function Login() {
   const [usuario, setUsuario] = useState("");
   const [contrasena, setPassword] = useState("");
+
+  const navigate = useNavigate(); // 👈
 
   const handleLogin = async () => {
     try {
@@ -14,22 +17,27 @@ function Login() {
 
       if (res.data.success) {
         alert("Login correcto 🔥");
+
+        // 👉 GUARDAR SESIÓN
+        localStorage.setItem("usuario", usuario);
+
+        // 👉 REDIRIGIR
+        navigate("/home");
       } else {
         alert("Credenciales incorrectas");
       }
-} catch (error) {
-  if (error.response) {
-    // El servidor respondió con un código (401, 404, 500, etc.)
-    console.log("Datos del error:", error.response.data);
-    console.log("Status:", error.response.status);
-  } else if (error.request) {
-    // La petición se hizo pero no hubo respuesta (Server apagado o CORS)
-    console.log("No se recibió respuesta del servidor");
-  } else {
-    console.log("Error de configuración:", error.message);
-  }
-  alert("Error en el servidor");
-}
+
+    } catch (error) {
+      if (error.response) {
+        console.log("Datos del error:", error.response.data);
+        console.log("Status:", error.response.status);
+      } else if (error.request) {
+        console.log("No se recibió respuesta del servidor");
+      } else {
+        console.log("Error de configuración:", error.message);
+      }
+      alert("Error en el servidor");
+    }
   };
 
   return (
@@ -48,6 +56,10 @@ function Login() {
       />
 
       <button onClick={handleLogin}>Ingresar</button>
+
+      <button onClick={() => navigate("/register")}>
+         Registrarse
+      </button>
     </div>
   );
 }
