@@ -4,6 +4,8 @@ import axios from "axios";
 function Persona() {
   const [personas, setPersonas] = useState([]);
   const [tipos, setTipos] = useState([]);
+  const [editando, setEditando] = useState(false);
+  const [idEditar, setIdEditar] = useState(null);
 
   const [form, setForm] = useState({
     idTipoPersona: "",
@@ -15,13 +17,13 @@ function Persona() {
     correo: ""
   });
 
-  // 🔹 cargar personas
+  //  cargar personas
   const obtenerPersonas = async () => {
     const res = await axios.get("http://localhost:3001/api/persona");
     setPersonas(res.data);
   };
 
-  // 🔹 cargar tipos
+  //  cargar tipos
   const obtenerTipos = async () => {
     const res = await axios.get("http://localhost:3001/api/tipopersona");
     setTipos(res.data);
@@ -32,7 +34,7 @@ function Persona() {
     obtenerTipos();
   }, []);
 
-  // 🔹 manejar inputs
+  //  manejar inputs
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -40,13 +42,41 @@ function Persona() {
     });
   };
 
-  // 🔹 crear
+  //  crear
   const crearPersona = async () => {
     await axios.post("http://localhost:3001/api/persona", form);
     obtenerPersonas();
   };
 
-  // 🔹 eliminar
+  //editar
+ const seleccionarPersona = (persona) => {
+  setForm({
+    idTipoPersona: persona.idTipoPersona,
+    nombre: persona.nombre,
+    apellido: persona.apellido,
+    fechaNacimiento: persona.fechaNacimiento?.split("T")[0],
+    domicilio: persona.domicilio,
+    telefono: persona.telefono,
+    correo: persona.correo
+  });
+
+  setEditando(true);
+  setIdEditar(persona.idPersona);
+};
+
+//update
+const actualizarPersona = async () => {
+  await axios.put(
+    `http://localhost:3001/api/persona/${idEditar}`,
+    form
+  );
+
+  setEditando(false);
+  setIdEditar(null);
+  obtenerPersonas();
+};
+
+  //  eliminar
   const eliminarPersona = async (id) => {
     await axios.delete(`http://localhost:3001/api/persona/${id}`);
     obtenerPersonas();
@@ -73,7 +103,9 @@ function Persona() {
       <input name="telefono" placeholder="Teléfono" onChange={handleChange} />
       <input name="correo" placeholder="Correo" onChange={handleChange} />
 
-      <button onClick={crearPersona}>Crear</button>
+      <button onClick={editando ? actualizarPersona : crearPersona}>
+        {editando ? "Actualizar" : "Crear"}
+      </button>
 
       {/* LISTA */}
       <ul>
@@ -84,11 +116,17 @@ function Persona() {
             <button onClick={() => eliminarPersona(p.idPersona)}>
               Eliminar
             </button>
+
+            <button onClick={() => seleccionarPersona(p)}>
+             Editar
+            </button>
+
           </li>
         ))}
       </ul>
     </div>
   );
 }
+
 
 export default Persona;

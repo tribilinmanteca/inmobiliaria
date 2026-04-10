@@ -5,7 +5,7 @@ const db = require("../config/db");
 router.post("/login", (req, res) => {
   console.log("BODY:", req.body);
   
-//a
+
   const { usuario, contrasena } = req.body;
 
   const query = "SELECT * FROM login WHERE usuario = ? AND contrasena = ?";

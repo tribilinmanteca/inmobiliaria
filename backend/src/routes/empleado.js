@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
 
-// 🔹 GET
+//  GET
 router.get("/", (req, res) => {
   const query = `
     SELECT c.idEmpleado, p.nombre, p.apellido
@@ -16,7 +16,7 @@ router.get("/", (req, res) => {
   });
 });
 
-// 🔹 POST
+//  POST
 router.post("/", (req, res) => {
   const { idPersona } = req.body;
 
@@ -30,7 +30,7 @@ router.post("/", (req, res) => {
   );
 });
 
-// 🔹 DELETE
+//  DELETE
 router.delete("/:id", (req, res) => {
   db.query(
     "DELETE FROM empleado WHERE idEmpleado=?",

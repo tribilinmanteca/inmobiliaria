@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const db = require("../config/db");
 
-// 🔹 GET
+// GET
 router.get("/", (req, res) => {
   const query = `
     SELECT p.*, t.descripcion 
@@ -16,7 +16,7 @@ router.get("/", (req, res) => {
   });
 });
 
-// 🔹 POST
+// POST
 router.post("/", (req, res) => {
   const {
     idTipoPersona,
@@ -44,7 +44,37 @@ router.post("/", (req, res) => {
   );
 });
 
-// 🔹 DELETE
+  // EDITAR
+router.put("/:id", (req, res) => {
+  const { id } = req.params;
+
+  const {
+    idTipoPersona,
+    nombre,
+    apellido,
+    fechaNacimiento,
+    domicilio,
+    telefono,
+    correo
+  } = req.body;
+
+  const query = `
+    UPDATE persona 
+    SET idTipoPersona=?, nombre=?, apellido=?, fechaNacimiento=?, domicilio=?, telefono=?, correo=?
+    WHERE idPersona=?
+  `;
+
+  db.query(
+    query,
+    [idTipoPersona, nombre, apellido, fechaNacimiento, domicilio, telefono, correo, id],
+    (err, result) => {
+      if (err) return res.status(500).json(err);
+      res.json({ message: "Persona actualizada" });
+    }
+  );
+});
+
+// DELETE
 router.delete("/:id", (req, res) => {
   db.query(
     "DELETE FROM persona WHERE idPersona=?",
